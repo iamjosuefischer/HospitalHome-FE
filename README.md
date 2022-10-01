@@ -1,4 +1,4 @@
-# hospitalhome
+# Hospital Home
 
 ## Project setup
 ```
