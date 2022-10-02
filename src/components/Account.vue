@@ -29,7 +29,7 @@ await this.verifyToken();
 let token = localStorage.getItem("token_access");
 let userId = jwt_decode(token).user_id.toString();
 
-axios.get(`https://mision-tic-bank-be.herokuapp.com/user/${userId}/`, {headers: {'Authorization': `Bearer ${token}`}})
+axios.get(`"https://hospitalhome-be.herokuapp.com/user/${userId}/`, {headers: {'Authorization': `Bearer ${token}`}})
 
 .then((result) => {
 this.name = result.data.name;
