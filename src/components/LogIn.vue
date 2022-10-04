@@ -1,109 +1,147 @@
 <template>
-        <div class="logIn_user">
-            <div class="container_logIn_user">
-                <h2>Iniciar sesión</h2>
-                    <form v-on:submit.prevent="processLogInUser" >
-                    <input type="text" v-model="user.username" placeholder="Usuario">
-                    <br>
-                    <input type="password" v-model="user.password" placeholder="Contraseña">
-                    <br>
-                    <button type="submit">Iniciar Sesion</button>
-                </form>
-            </div>
+    
+    <div class="logIn_user">
+        
+
+        <div class="imagen">
+            <img src="../assets/logo.png" alt="">
+            
         </div>
-    </template>
-    <script>
+
+        <div class="container_logIn_user">
+            <h2>Iniciar Sesión</h2>
+
+            <form v-on:submit.prevent="processLogInUser" >
+                <input type="text" v-model="user.username" placeholder="Usuario">
+                <br>
+                <input type="password" v-model="user.password" placeholder="Contraseña">
+                <br>
+                <button type="submit">Ingresar</button>
+                <br>
+                <h5>¿Aún no tienes una cuenta? Regístrate como</h5>
+                <button @click="goToPaciente()">Paciente</button>
+                <button @click="goToMedico()">Medico</button>
+                <button @click="goToEnfermero()">Enfermero</button>
+               
+            </form>
+        </div>
+    
+    </div>
+
+</template>
+
+<script>
 import axios from 'axios';
+
 export default {
     name: "LogIn",
+
     data: function(){
-    return {
-        user: {
-            username:"",
-            password:""
+        return {
+            user: {
+                username:"",
+                password:""
+            }
         }
-    }
     },
+
     methods: {
         processLogInUser: function(){
-        axios.post(
-        "https://hospitalhome-be.herokuapp.com/login/",
-        this.user,
-        {headers: {}}
-        )
-        .then((result) => {
-            let dataLogIn = {
-            username: this.user.username,
-            token_access: result.data.access,
-            token_refresh: result.data.refresh,
+            axios.post(
+                "https://hospitalhome-be.herokuapp.com/userlogin/",
+                    this.user,
+                    {headers: {}}
+                    )
+                    .then((result) => {
+                        let dataLogIn = {
+                            username: this.user.username,
+                            token_access: result.data.access,
+                            token_refresh: result.data.refresh,
+                        }
+
+                        this.$emit('completedLogIn', dataLogIn)
+                    })
+                    .catch((error) => {
+
+                        if (error.response.status == "401")
+                            alert("ERROR 401: Credenciales Incorrectas.");
+                    });
+        },
+        goToMedico(){
+        this.$router.push('signUpMedico'); 
+        },
+        goToEnfermero(){
+        this.$router.push('signUpEnfermero'); 
+        },
+        goToPaciente(){
+        this.$router.push('signUp'); 
         }
-
-    this.$emit('completedLogIn', dataLogIn)
-
-            })
-            .catch((error) => {
-            if (error.response.status == "401")
-            alert("ERROR 401: Credenciales Incorrectas.");
-            });
-    }
     }
 }
 </script>
+
 <style>
     .logIn_user{
-    margin: 0;
-    padding: 0%;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        margin: 0;
+        padding: 0%;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: center;
     }
+
     .container_logIn_user {
-    border: 3px solid #5372F0;
-    border-radius: 10px;
-    width: 25%;
-    height: 60%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
+        border: 1px solid #bfbfbf;
+        border-radius: 25px;
+        width: 20%;
+        height: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
     }
+
+
     .logIn_user h2{
-    color: #5372F0;
+        color: #000000;
     }
-    
-    
+
     .logIn_user form{
-    width: 70%;
-    }
-    .logIn_user input{
-    height: 40px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px 20px;
-    margin: 5px 0;
-    border: 1px solid #5372F0;
-    border-radius: 12px;
-    font: oblique bold 90% cursive;
+        width: 70%;
 
     }
+
+    .logIn_user input{
+        height: 30px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 20px;
+        margin: 5px 0;
+        border: 1px solid #bfbfbf;
+        border-radius: 25px;
+    }
+
     .logIn_user button{
-    width: 100%;
-    height: 40px;
-    color: #E5E7E9;
-    background: #5372F0;
-    border: 1px solid #E5E7E9;
-    border-radius: 5px;
-    padding: 10px 25px;
-    margin: 5px 0;
-    border-radius: 12px;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 30px;
+        color: #E5E7E9;
+        background: #1371ab;
+        border: 1px solid #E5E7E9;
+        border-radius: 25px;
+        padding: 5px 5px;
+        margin: 3px 0;
     }
+
     .logIn_user button:hover{
-    color: #E5E7E9;
-    background: crimson;
-    border: 1px solid #5372F0;
-    border-radius: 12px;
-    }
-    </style>
+        color: #E5E7E9;
+        background: #84b3d3;
+        border: 1px solid #1371ab;
+    } 
+</style>
