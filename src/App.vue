@@ -5,9 +5,9 @@
       <div class="buttons">
       <nav>
         <button v-if="is_auth" v-on:click="loadHome">Inicio</button>
-        <button v-if="is_auth" v-on:click="loadConsulPer">Informacion Personal</button>
+        <button v-if="is_auth" v-on:click="loadConsulPer">Información Personal</button>
         <button v-if="!is_auth" v-on:click="loadLogIn">Iniciar Sesión</button>
-        <button v-if="perfil=='Medico'" v-on:click="loadSignUp">Registrar Usuario</button> 
+        <button v-if="perfil=='Medico'" v-on:click="loadSignUp">Registrar Personal</button>
         <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>
       </nav>
       </div>
@@ -55,7 +55,7 @@
           localStorage.setItem("username", data.username);
           localStorage.setItem("token_access", data.token_access);
           localStorage.setItem("token_refresh", data.token_refresh);
-          alert("Auntenticación Exitosa");
+          alert("¡Bienvenido de nuevo a Hospital Home!");
           this.veryAuth();
       },
       completedSignUp: function(data){
@@ -63,7 +63,7 @@
       },
       logOut:function(){
         localStorage.clear();
-        alert("Sesion Cerrada");
+        alert("Sesion cerrada, vuelve pronto");
         this.veryAuth();
       },
       loadHome:function(){
