@@ -7,7 +7,7 @@
         <button v-if="is_auth" v-on:click="loadHome">Inicio</button>
         <button v-if="is_auth" v-on:click="loadConsulPer">Información Personal</button>
         <button v-if="!is_auth" v-on:click="loadLogIn">Iniciar Sesión</button>
-        <button v-if="perfil=='Medico'" v-on:click="loadSignUp">Registrar Personal</button>
+        <button v-if="perfil=='Médico'" v-on:click="loadSignUp">Registrar Personal</button>
         <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>
       </nav>
       </div>
