@@ -1,147 +1,128 @@
 <template>
-    
     <div class="logIn_user">
-        
-
-        <div class="imagen">
-            <img src="../assets/logo.png" alt="">
-            
-        </div>
-
         <div class="container_logIn_user">
-            <h2>Iniciar Sesión</h2>
-
-            <form v-on:submit.prevent="processLogInUser" >
-                <input type="text" v-model="user.username" placeholder="Usuario">
-                <br>
-                <input type="password" v-model="user.password" placeholder="Contraseña">
-                <br>
-                <button type="submit">Ingresar</button>
-                <br>
-                <h5>¿Aún no tienes una cuenta? Regístrate como</h5>
-                <button @click="goToPaciente()">Paciente</button>
-                <button @click="goToMedico()">Medico</button>
-                <button @click="goToEnfermero()">Enfermero</button>
-               
-            </form>
+        <form v-on:submit.prevent="processLogInUser">
+            <h1>Iniciar Sesión</h1>
+            <label id="user_username">
+                   <input type="text" v-model="user.username" placeholder="Usuario" required> 
+            </label>
+            <br>
+            <label id="user_password">
+                   <input type="password" v-model="user.password" placeholder="Contraseña" required> 
+            </label>
+            <br>
+            <button type="submit">Iniciar Sesion</button>  
+        </form>
+        
         </div>
-    
     </div>
-
 </template>
 
+
 <script>
-import axios from 'axios';
-
-export default {
-    name: "LogIn",
-
-    data: function(){
-        return {
-            user: {
-                username:"",
-                password:""
+    import jwt_decode from 'jwt-decode';
+    import axios from 'axios';
+    export default {
+        data:function(){
+            return{
+                user:{
+                    username:"",
+                    password:"",
+                    perfil:""
+                }
             }
-        }
-    },
+        },
+        methods:{
+            processLogInUser: function(){
+                axios.post("https://hospitalhome-be.herokuapp.com/login/",this.user, {header:{}})
+                .then((result)=>{
+                    let dataLogIn={
+                        username: this.user.username,
+                        token_access: result.data.access,
+                        token_refresh: result.data.refresh,
+                    } 
+                
+                    let userId= jwt_decode(dataLogIn.token_access).user_id.toString();
 
-    methods: {
-        processLogInUser: function(){
-            axios.post(
-                "https://hospitalhome-be.herokuapp.com/userlogin/",
-                    this.user,
-                    {headers: {}}
-                    )
-                    .then((result) => {
-                        let dataLogIn = {
-                            username: this.user.username,
-                            token_access: result.data.access,
-                            token_refresh: result.data.refresh,
-                        }
-
-                        this.$emit('completedLogIn', dataLogIn)
-                    })
-                    .catch((error) => {
-
-                        if (error.response.status == "401")
-                            alert("ERROR 401: Credenciales Incorrectas.");
+                    axios.get(`https://hospitalhome-be.herokuapp.com/ConsultaUsuario/${userId}`)
+                    .then((result)=>{
+                        console.log(result)
+                        let perfil = result.data.perfil
+                        this.$emit('completedLogIn', dataLogIn,perfil)  
+                    }).catch((error)=>{
+                        console.log(error)
                     });
-        },
-        goToMedico(){
-        this.$router.push('signUpMedico'); 
-        },
-        goToEnfermero(){
-        this.$router.push('signUpEnfermero'); 
-        },
-        goToPaciente(){
-        this.$router.push('signUp'); 
+                    
+                }).catch((error)=>{
+                    console.log(error)
+                    if(error.response.status=="401")
+                        alert("ERROR 401: Credenciales Incorrectas");
+                }
+                );
+                
+            }
+
         }
     }
-}
-</script>
+    </script>
+    
 
 <style>
-    .logIn_user{
-        margin: 0;
-        padding: 0%;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-content: center;
-    }
 
-    .container_logIn_user {
-        border: 1px solid #bfbfbf;
-        border-radius: 25px;
-        width: 20%;
-        height: 80%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
+h1 {
+    color: #000000
+}
 
+.logIn_user {
+    height: 450px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 
-    .logIn_user h2{
-        color: #000000;
-    }
+.container_logIn_user {
+    margin-top: 8rem;
+    border: 1px solid #bfbfbf;
+    border-radius: 25px;
+    width: 25%;
+    height: 60%;
+    display: flex;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+}
 
-    .logIn_user form{
-        width: 70%;
+.logIn_user form {
+    padding: 30px;
+    width: 100%;
+}
 
-    }
+.logIn_user input {
+    height: 30px;
+    width: 80%;
+    box-sizing: border-box;
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin: 5px 0;
+    border: 1px solid #bfbfbf;
+}
 
-    .logIn_user input{
-        height: 30px;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 10px 20px;
-        margin: 5px 0;
-        border: 1px solid #bfbfbf;
-        border-radius: 25px;
-    }
+.logIn_user button {
+    width: 80%;
+    height: 40px;
+    color: #ffffff;
+    background: #007bff;
+    border: 1px solid #bfbfbf;
+    border-radius: 25px;
+    padding: 10px 25px;
+    margin: 5px 0;
+    font-family: "Poppins", sans-serif;
+}
 
-    .logIn_user button{
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 30px;
-        color: #E5E7E9;
-        background: #1371ab;
-        border: 1px solid #E5E7E9;
-        border-radius: 25px;
-        padding: 5px 5px;
-        margin: 3px 0;
-    }
+.logIn_user button:hover {
+    background: #025cf7;
+    cursor: pointer;
+}
 
-    .logIn_user button:hover{
-        color: #E5E7E9;
-        background: #84b3d3;
-        border: 1px solid #1371ab;
-    } 
 </style>

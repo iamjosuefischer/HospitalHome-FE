@@ -1,194 +1,155 @@
 <template>
-  <!-- <carrusel :slides="slides" :interval="3000" controls indicators></carrusel> -->
-  
   <div id="app" class="app">
-
-      <div class="header">
-      
-      <h1>Hospital Home</h1><img src="./assets/logo.png" alt="" class="logo1">
-    
+    <div class="header">
+      <img src="@/assets/logo.png" class="logo">
+      <div class="buttons">
       <nav>
         <button v-if="is_auth" v-on:click="loadHome">Inicio</button>
-        <button v-if="is_auth" v-on:click="loadAccount">Cuenta</button>
-        <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>       
+        <button v-if="is_auth" v-on:click="loadConsulPer">Informacion Personal</button>
+        <button v-if="!is_auth" v-on:click="loadLogIn">Iniciar Sesión</button>
+        <button v-if="perfil=='Medico'" v-on:click="loadSignUp">Registrar Usuario</button> 
+        <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>
       </nav>
-    </div>
-
-    <div class="main-component">
-      <router-view
-        v-on:completedLogIn="completedLogIn"
-        v-on:completedSignUp="completedSignUp"
-        v-on:logOut="logOut"
-      >
-      </router-view>
-    </div>
-
-    <div class="footer">
-      <h2>Hospital Home - 2022</h2>
+      </div>
     </div>
 
   </div>
+  <div class="main-component">
+    <router-view 
+      v-on:completedLogIn= "completedLogIn"
+      v-on:completedSignUp= "completedSignUp"
+      v-on:logOut="logOut"
+      ></router-view>
+  </div> 
 </template>
 
-
 <script>
-
-import Carrusel from "./components/carrusel/Carrusel.vue";
-export default {
-  name: 'App',
+  export default({
   
-  data: function(){
-    return{
-      is_auth: false
+    data: function(){
+        return{
+          is_auth: false,
+          perfil: "",
+        }
+    },
+  
+    methods:{
+      veryAuth: function(){
+        this.is_auth= localStorage.getItem("isAuth") || false;
+        this.perfil = localStorage.getItem("perfil")
+
+      if(this.is_auth== false)
+        this.$router.push({name:"logIn"});
+      else
+        this.$router.push({name:"home"});
+      },  
+      loadLogIn: function(){
+          this.$router.push({name:"logIn"})
+      },
+      loadSignUp: function(){
+          this.$router.push({name:"signUp"})
+      },
+      completedLogIn: function(data,perfil){
+          localStorage.setItem("isAuth", true)
+          localStorage.setItem("perfil", perfil)
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("token_access", data.token_access);
+          localStorage.setItem("token_refresh", data.token_refresh);
+          alert("Auntenticación Exitosa");
+          this.veryAuth();
+      },
+      completedSignUp: function(data){
+          alert("Registro Exitoso");
+      },
+      logOut:function(){
+        localStorage.clear();
+        alert("Sesion Cerrada");
+        this.veryAuth();
+      },
+      loadHome:function(){
+        this.$router.push({name:"home"});
+      },
+      loadConsulPer:function(){
+        this.$router.push({name:"consultPer"});
+      },
+      verySalud:function(){
+        load =  true;
+      }
+    },
+  
+    created:function(){
+      this.load= localStorage.getItem("load") || false;
     }
-  },
-  
-  data_carrusel:()=> ({
-    slides:[
-      "./components/carrusel/medicamentos.jpeg",
-      "./assets/medicamentos.jpeg",
-      "./assets/medicamentos1.jpeg",
-
-    ],
-
-  }),
-
-  components: {
-    Carrusel
-  },
-
-  methods:{
-    verifyAuth: function() {
-          this.is_auth = localStorage.getItem("isAuth") || false;
-          
-          if (this.is_auth == false)
-            this.$router.push({ name: "logIn" });
-          else
-            this.$router.push({ name: "home" });
-        },
-
-    loadLogIn: function(){
-      this.$router.push({name: "logIn"})
-    },
-
-    loadSignUp: function(){
-      this.$router.push({name: "signUp"})
-    },
-
-    loadHome: function() {
-      this.$router.push({ name: "home" });
-    },
-
-    loadsignUpMedico: function() {
-      this.$router.push({ name: "signUpMedico" });
-    },
-
-    loadsignUpEnfermero: function() {
-      this.$router.push({ name: "signUpEnfermero" });
-    },
-
-    logOut: function () {
-      localStorage.clear();
-      alert("Sesión Cerrada");
-      this.verifyAuth();
-    },
-
-    
-    completedLogIn: function(data) {
-      localStorage.setItem("isAuth", true);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("token_access", data.token_access);
-      localStorage.setItem("token_refresh", data.token_refresh);
-      alert("Autenticación Exitosa");
-      this.verifyAuth();
-    },
-
-    completedSignUp: function(data) {
-      alert("Registro Exitoso");
-      this.completedLogIn(data);
-    },
-
-  },
-
-  created: function(){
-    this.verifyAuth()
-  }
-
-}
-
-</script>
+  })
+  </script>
 
 
 <style>
 
-  * {
-    font-family: 'Poppins', sans-serif;
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+    margin: 0 0 0 0; 
   }
 
-  body{
-    margin: 0 0 0 0;
-  }
-  
-  .header{
-    margin-bottom: 2rem;
+.header {
+    margin: 0;
     padding: 0;
-    width: 100%;
-    height: 10vh;
-    min-height: 60px;
-
-    background-color: #1371ab ;
-    color:#E5E7E9 ;
-
+    width:100%;
+    min-height: 80px;
+    background-color: #ffffff;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    color: #000000;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .header h1{
-    width: 20%;
-    text-align: center;
+  .logo {
+    width: 5%;
+    padding-left: 2rem;
   }
 
-  .header nav{
-    height: 100%;
-    width: 30%;
-
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    font-size: 20px;
-  }
-
-  .main-component{
-    height: 75vh;
-    margin: 0%;
-    padding: 0%;
-
-    background: #FDFEFE;
-  }
-
-  .footer{
-    margin-top: 2rem;
-    padding: 0;
-    width: 100%;
+  .buttons {
+    margin: 0;
+    padding: 0% 2%;
+    width:96%;
     height: 10vh;
-    min-height: 60px;
-    background-color: #1371ab;
-    color: #E5E7E9;
-  }
-
-  .footer h2{
-    width: 100%;
-    height: 100%;
-
+    min-height: 10px;
+    color: #007bff;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
+    align-items:center;
   }
 
-  .logo1{
-    width: 50px;
+.buttons nav button {
+    color: #ffffff;
+    background: #007bff;
+    border: 1px solid #bfbfbf;
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin-left: 10px;
   }
+
+.buttons button:hover {
+  background: #025cf7;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+    width: .60rem;
+    background-color: transparent;
+    border-radius: .5rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: .5rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: gray;
+}
 </style>
-
