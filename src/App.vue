@@ -1,166 +1,155 @@
-
 <template>
   <div id="app" class="app">
-
     <div class="header">
-      <h1>Hospital Home</h1>
+      <img src="@/assets/logo.png" class="logo">
+      <div class="buttons">
       <nav>
-        <button v-if="is_auth" v-on:click="loadHome"> Inicio </button>
-        <button v-if="is_auth" v-on:click="loadAccount"> Cuenta </button>
-        <button v-if="is_auth" v-on:click="logOut"> Cerrar Sesión </button>
-        <button v-if="!is_auth" v-on:click="loadLogIn" > Iniciar Sesión </button>
-        <button v-if="!is_auth" v-on:click="loadSignUp" > Registrarse </button>
+        <button v-if="is_auth" v-on:click="loadHome">Inicio</button>
+        <button v-if="is_auth" v-on:click="loadConsulPer">Informacion Personal</button>
+        <button v-if="!is_auth" v-on:click="loadLogIn">Iniciar Sesión</button>
+        <button v-if="perfil=='Medico'" v-on:click="loadSignUp">Registrar Usuario</button> 
+        <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>
       </nav>
+      </div>
     </div>
 
-<div class="main-component">
-    <router-view
-      v-on:completedLogIn="completedLogIn"
-      v-on:completedSignUp="completedSignUp"
+  </div>
+  <div class="main-component">
+    <router-view 
+      v-on:completedLogIn= "completedLogIn"
+      v-on:completedSignUp= "completedSignUp"
       v-on:logOut="logOut"
-      >
-    </router-view>
-</div>
-
-    <div class="footer">
-      <h2>Ciclo 3-2022 Grupo 15</h2>
-    </div>
-    </div>
+      ></router-view>
+  </div> 
 </template>
 
-
 <script>
-  export default {
-    name: 'App',
+  export default({
+  
     data: function(){
-      return{
-         is_auth: false
-      }
-  },
-  components: {
-  },
-  methods:{
-    logOut: function () {
-      localStorage.clear();
-      alert("Sesión Cerrada");
-      this.verifyAuth();
+        return{
+          is_auth: false,
+          perfil: "",
+        }
     },
-    loadHome: function() {
-        this.$router.push({ name: "home" });
-        },
-        loadAccount: function () {
-this.$router.push({ name: "account" });
-},
-    verifyAuth: function() {
-      
-        this.is_auth = localStorage.getItem("isAuth") || false;
-      if (this.is_auth == false)
-        this.$router.push({ name: "logIn" });
+  
+    methods:{
+      veryAuth: function(){
+        this.is_auth= localStorage.getItem("isAuth") || false;
+        this.perfil = localStorage.getItem("perfil")
+
+      if(this.is_auth== false)
+        this.$router.push({name:"logIn"});
       else
-        this.$router.push({ name: "home" });
+        this.$router.push({name:"home"});
+      },  
+      loadLogIn: function(){
+          this.$router.push({name:"logIn"})
+      },
+      loadSignUp: function(){
+          this.$router.push({name:"signUp"})
+      },
+      completedLogIn: function(data,perfil){
+          localStorage.setItem("isAuth", true)
+          localStorage.setItem("perfil", perfil)
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("token_access", data.token_access);
+          localStorage.setItem("token_refresh", data.token_refresh);
+          alert("Auntenticación Exitosa");
+          this.veryAuth();
+      },
+      completedSignUp: function(data){
+          alert("Registro Exitoso");
+      },
+      logOut:function(){
+        localStorage.clear();
+        alert("Sesion Cerrada");
+        this.veryAuth();
+      },
+      loadHome:function(){
+        this.$router.push({name:"home"});
+      },
+      loadConsulPer:function(){
+        this.$router.push({name:"consultPer"});
+      },
+      verySalud:function(){
+        load =  true;
+      }
     },
-    loadLogIn: function(){
-      this.$router.push({name: "logIn"})
-  },
-    loadSignUp: function(){
-      this.$router.push({name: "signUp"})
-  },
-    completedLogIn: function(data) {
-      localStorage.setItem("isAuth", true);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("token_access", data.token_access);
-      localStorage.setItem("token_refresh", data.token_refresh);
-      alert("Autenticación Exitosa");
-      this.verifyAuth();
-    },
-    completedSignUp: function(data) {
-      alert("Registro Exitoso");
-      this.completedLogIn(data);
-    },
-  },
-  created: function(){
-    this.verifyAuth()
-}
-}
-</script>
+  
+    created:function(){
+      this.load= localStorage.getItem("load") || false;
+    }
+  })
+  </script>
+
+
 <style>
 
-  body{
-  margin: 0 0 0 0;
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+    margin: 0 0 0 0; 
   }
-  .header{
-  margin: 0%;
-  padding: 0;
-  width: 100%;
-  height: 10vh;
-  min-height: 100px;
-  background-color: #5372F0 ;
-  color:#E5E7E9 ;
-  display: flex;
-  justify-content: space-between;
-align-items: center;
-font: oblique bold 120% cursive;
 
+.header {
+    margin: 0;
+    padding: 0;
+    width:100%;
+    min-height: 80px;
+    background-color: #ffffff;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    color: #000000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    width: 5%;
+    padding-left: 2rem;
+  }
+
+  .buttons {
+    margin: 0;
+    padding: 0% 2%;
+    width:96%;
+    height: 10vh;
+    min-height: 10px;
+    color: #007bff;
+    display: flex;
+    justify-content: flex-end;
+    align-items:center;
+  }
+
+.buttons nav button {
+    color: #ffffff;
+    background: #007bff;
+    border: 1px solid #bfbfbf;
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin-left: 10px;
+  }
+
+.buttons button:hover {
+  background: #025cf7;
+  cursor: pointer;
 }
-.header h1{
-width: 20%;
-text-align: center;
+
+::-webkit-scrollbar {
+    width: .60rem;
+    background-color: transparent;
+    border-radius: .5rem;
 }
-.header nav{
-height: 100%;
-width: 20%;
-display: flex;
-justify-content: space-around;
-align-items: center;
-font-size: 20px;
-font: oblique bold 120% cursive;
 
-
+::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: .5rem;
 }
-.header nav button
-{
 
-color: #E5E7E9;
-background: #CD52DB;
-border: 1px solid #E5E7E9;
-border-radius: 5px;
-padding: 10px 20px;
-border-radius: 12px;
-
-}
-.header nav button:hover{
-color: #4187D9;
-background: #E5E7E9;
-border: 1px solid #E5E7E9;
-border: none;
-border-radius: 12px;
-
-}
-.main-component{
-height: 75vh;
-margin: 0%;
-padding: 0%;
-background: #FDFEFE;
-font: oblique bold 110% cursive;
-
-}
-.footer{
-margin:0;
-padding:0;
-width: 100%;
-height: 10vh;
-min-height: 100px;
-background-color: #5372F0;
-color: #E5E7E9;
-border: none;
-font: oblique bold 120% cursive;
-
-}
-.footer h2{
-width: 100%;
-height: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+::-webkit-scrollbar-thumb:hover {
+    background-color: gray;
 }
 </style>
