@@ -1,14 +1,13 @@
 <template>
-    <h1>Información de tú cuenta</h1>
-    <div>
-      
+    <h1 class="information_tittle">Información Personal</h1>
+    <div class="information">
         <h2>Nombre: <span>{{name}}</span></h2>
-        <h2>Perfil: <span>{{perfil}} </span></h2>
-        <h2>Telefono: <span>{{telefono}}</span></h2>
-        <h2>Genero: <span>{{genero}}</span></h2>
-        <div v-if= loaded>
+        <h2>Perfíl: <span>{{perfil}} </span></h2>
+        <h2>Teléfono: <span>{{telefono}}</span></h2>
+        <h2>Género: <span>{{genero}}</span></h2>
+        <!-- <div v-if= loaded>
             <h2>Ciudad: <span>{{ciudad}}</span></h2>
-        </div>
+        </div> -->
     </div>
   </template>
   
@@ -98,18 +97,18 @@
   text-align: center;
   }
 
-  .information h1 {
-  font-size: 60px;
+  .information_tittle {
+  font-size: 50px;
   color: #000000;
   }
 
   .information h2 {
-  font-size: 40px;
+  font-size: 30px;
   color: #000000;
   }
 
   .information span {
-  color: crimson;
+  color: #007bff;
   font-weight: bold;
   }
   </style>

@@ -19,7 +19,7 @@
                     <select id="cajon" v-model="user.perfil">
                         <option>Paciente</option>
                         <option>Familiar</option>
-                        <option>Medico</option>
+                        <option>Médico</option>
                     </select>
                 </label>
                 <br>
