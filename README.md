@@ -1,4 +1,5 @@
 # Hospital Home
+Front-end of the proyect Hospital Home.
 
 ## Project setup
 ```
